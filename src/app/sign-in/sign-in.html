@@ -2,13 +2,19 @@
   <mat-card class="login-card">
     <mat-card-header>
       <div mat-card-avatar class="header-image"></div>
-      <mat-card-title>ברוכים הבאים</mat-card-title>
+      <mat-card-title>{{ isLoginMode ? 'ברוכים הבאים' : 'יצירת חשבון חדש' }}</mat-card-title>
       <mat-card-subtitle>מערכת סינון תמונות חכמה</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <form [formGroup]="signInForm" (ngSubmit)="onSignIn()" class="login-form">
+      <form [formGroup]="authForm" (ngSubmit)="onSubmit()" class="login-form">
         
+        <mat-form-field appearance="outline" class="full-width" *ngIf="!isLoginMode">
+          <mat-label>שם מלא</mat-label>
+          <input matInput formControlName="fullName" placeholder="ישראל ישראלי">
+          <mat-icon matSuffix>person</mat-icon>
+        </mat-form-field>
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>כתובת אימייל</mat-label>
           <input matInput formControlName="email" placeholder="example@mail.com" type="email">
@@ -20,21 +26,27 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>סיסמה</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
-          <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide" type="button">
+          <button mat-icon-button matSuffix (click)="hide = !hide" type="button">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
           <mat-error *ngIf="f['password'].errors?.['required']">שדה זה חובה</mat-error>
           <mat-error *ngIf="f['password'].errors?.['minlength']">הסיסמה חייבת להכיל לפחות 6 תווים</mat-error>
         </mat-form-field>
 
-        <button mat-raised-button color="primary" class="login-button" [disabled]="signInForm.invalid" type="submit">
-          התחברות למערכת
+        <button mat-raised-button color="primary" class="login-button" [disabled]="authForm.invalid || isLoading" type="submit">
+          <span *ngIf="isLoading">טוען...</span>
+          <span *ngIf="!isLoading">{{ isLoginMode ? 'התחברות למערכת' : 'הרשמה עכשיו' }}</span>
         </button>
       </form>
     </mat-card-content>
 
     <mat-card-footer class="login-footer">
-      <p>אין לך חשבון? <a href="#">צור חשבון חדש</a></p>
+      <p>
+        {{ isLoginMode ? 'אין לך חשבון?' : 'כבר יש לך חשבון?' }} 
+        <a href="javascript:void(0)" (click)="toggleMode()">
+          {{ isLoginMode ? 'צור חשבון חדש' : 'התחבר מכאן' }}
+        </a>
+      </p>
     </mat-card-footer>
   </mat-card>
 </div>

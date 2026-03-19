@@ -1,1 +1,49 @@
-<app-sign-in></app-sign-in>
+<div style="text-align: center; padding: 50px; font-family: Arial;">
+    <h1>מערכת סינון תמונות</h1>
+
+    <div style="margin-bottom: 20px;">
+        <input type="text" [(ngModel)]="userRequest" placeholder="מה לסנן? (למשל: תסנן עיניים עצומות)"
+            style="padding: 10px; width: 300px; font-size: 16px;">
+    </div>
+
+    <div style="margin-bottom: 20px;">
+        <input type="file" multiple (change)="onFileSelected($event)" style="font-size: 16px;">
+    </div>
+
+    <div *ngIf="imagePreviews.length > 0"
+        style="margin-bottom: 20px; display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+        <img *ngFor="let url of imagePreviews" [src]="url"
+            style="width: 150px; height: 150px; object-fit: cover; border-radius: 8px;">
+    </div>
+
+    <button (click)="onUpload()" [disabled]="selectedFiles.length === 0 || isLoading"
+        style="padding: 15px 30px; font-size: 18px; background-color: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;">
+        <span *ngIf="isLoading">טוען... שולח לשרת...</span>
+        <span *ngIf="!isLoading">שלח לסינון!</span>
+    </button>
+    <hr *ngIf="filteredPhotos.length > 0">
+
+    <div *ngIf="filteredPhotos.length > 0" style="margin-top: 30px;">
+        <h2>תוצאות הסינון החכם:</h2>
+        <div style="display: flex; gap: 20px; flex-wrap: wrap; justify-content: center;">
+
+            <div *ngFor="let photo of filteredPhotos"
+                [style.border]="photo.isApproved ? '3px solid #28a745' : '3px solid #dc3545'"
+                style="width: 200px; padding: 10px; border-radius: 10px; background: white; position: relative;">
+
+                <img [src]="'https://localhost:7071' + photo.filePath"
+                    style="width: 100%; height: 150px; object-fit: cover; border-radius: 5px;">
+
+                <div style="margin-top: 10px; font-weight: bold; color: #333;">
+                    <span *ngIf="photo.isApproved" style="color: #28a745;">✅ מאושר</span>
+                    <span *ngIf="!photo.isApproved" style="color: #dc3545;">❌ נפסל</span>
+                </div>
+
+                <p *ngIf="!photo.isApproved" style="font-size: 12px; color: #666; margin-top: 5px;">
+                    {{ photo.rejectionReason }}
+                </p>
+            </div>
+
+        </div>
+    </div>
+</div>
