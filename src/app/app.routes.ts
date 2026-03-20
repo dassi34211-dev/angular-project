@@ -1,9 +1,5 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideHttpClient } from '@angular/common/http';
+import { Routes } from '@angular/router';
 
-export const appConfig: ApplicationConfig = {
-  providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }),
-    provideHttpClient() // רק זה נשאר, בלי הראוטינג!
-  ]
-};
+export const routes: Routes = [
+  // בהמשך תוסיפו לכאן את הנתיבים לדפים שלכן (כמו sign-in או gallery)
+];
