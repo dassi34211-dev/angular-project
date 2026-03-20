@@ -53,7 +53,12 @@ export class GalleryComponent {
         next: (response: any) => {
           console.log('Upload success!', response);
           this.isLoading = false;
-          alert('בום! התמונות נשלחו ועברו סינון בהצלחה בשרת!');
+          alert('בום! התמונות עברו סינון בהצלחה! קובץ ה-ZIP יורד עכשיו למחשב.');
+          
+          // הפקודה שמושכת את ה-ZIP עם התמונות המאושרות מהשרת:
+          if (response && response.setId) {
+            window.open(`https://localhost:7071/api/Images/${response.setId}/download`, '_blank');
+          }
         },
         error: (err) => {
           console.error('Upload failed', err);

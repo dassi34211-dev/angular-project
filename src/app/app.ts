@@ -17,6 +17,7 @@ export class App {
   imagePreviews: string[] = []; 
   userRequest: string = '';
   isLoading = false;
+  filteredPhotos: any[] = []; 
 
   onFileSelected(event: any) {
     this.selectedFiles = Array.from(event.target.files);
@@ -29,31 +30,34 @@ export class App {
     }
   }
 
-// תוסיפי את המשתנה הזה למעלה בתוך ה-class App
-filteredPhotos: any[] = []; 
+  onUpload() {
+    if (this.selectedFiles.length === 0) return;
+    
+    this.isLoading = true;
+    const formData = new FormData();
+    this.selectedFiles.forEach(file => formData.append('files', file));
+    formData.append('filterType', this.userRequest);
 
-onUpload() {
-  if (this.selectedFiles.length === 0) return;
-  
-  this.isLoading = true;
-  const formData = new FormData();
-  this.selectedFiles.forEach(file => formData.append('files', file));
-  formData.append('filterType', this.userRequest);
+    // פונים לשרת ומעלים את התמונות
+    this.http.post('https://localhost:7071/api/Images/upload-set', formData)
+      .subscribe({
+        next: (response: any) => {
+          this.isLoading = false;
+          console.log('Results from server:', response);
+          
+          // מורידים את הקובץ ישירות באותו חלון, כדי שהדפדפן לא יחסום את ההורדה
+          if (response && response.setId) {
+            window.location.href = `https://localhost:7071/api/Images/${response.setId}/download`;
+          }
 
-  // שימי לב: אנחנו פונים לשרת ומחכים לתוצאה המפורטת
-  this.http.post('https://localhost:7071/api/Images/upload-set', formData)
-    .subscribe({
-      next: (response: any) => {
-        this.isLoading = false;
-        // כאן הקסם: אנחנו שומרים את רשימת התמונות שהשרת עיבד
-        // (בהנחה שביתיה מחזירה את האובייקט עם התמונות)
-        this.filteredPhotos = response.photos || []; 
-        console.log('Results from server:', response);
-      },
-      error: (err) => {
-        this.isLoading = false;
-        alert('שגיאה בשליפת התוצאות');
-      }
-    });
-}
+          // ההודעה קופצת חצי שנייה אחרי שההורדה התחילה כדי לא לתקוע אותה
+          setTimeout(() => alert('בום! התמונות עברו סינון בהצלחה! קובץ ה-ZIP אמור לרדת כעת.'), 500);
+        },
+        error: (err) => {
+          this.isLoading = false;
+          console.error('Error:', err);
+          alert('שגיאה בשליפת התוצאות מול השרת.');
+        }
+      });
+  }
 }
