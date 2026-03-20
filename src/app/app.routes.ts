@@ -1,7 +1,9 @@
-import { Routes } from '@angular/router';
-import { SignInComponent } from './sign-in/sign-in'; // וודאי שהנתיב פה נכון
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideHttpClient } from '@angular/common/http';
 
-export const routes: Routes = [
-  { path: 'signin', component: SignInComponent },
-  { path: '', redirectTo: 'signin', pathMatch: 'full' } // זה יפתח את העמוד ישר בהתחלה
-];
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideHttpClient() // רק זה נשאר, בלי הראוטינג!
+  ]
+};

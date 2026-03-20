@@ -1,0 +1,37 @@
+<div class="gallery-container">
+  <mat-card class="upload-card">
+    <mat-card-header>
+      <mat-card-title>העלאת תמונות לסינון חכם</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      
+      <div class="input-section">
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>מה לסנן? (למשל: תסנן עיניים עצומות ותחזיר 3)</mat-label>
+          <input matInput [(ngModel)]="userRequest" placeholder="הקלידי כאן...">
+          <mat-icon matSuffix>smart_toy</mat-icon>
+        </mat-form-field>
+        
+        <input type="file" multiple (change)="onFileSelected($event)" #fileInput style="display: none;">
+        <button mat-stroked-button color="primary" (click)="fileInput.click()" class="upload-btn">
+          <mat-icon>attach_file</mat-icon> בחר תמונות
+        </button>
+        <span class="file-count" *ngIf="selectedFiles.length > 0">
+          נבחרו {{selectedFiles.length}} תמונות
+        </span>
+      </div>
+      
+      <div class="preview-section" *ngIf="imagePreviews.length > 0">
+         <img *ngFor="let url of imagePreviews" [src]="url" class="preview-img">
+      </div>
+
+    </mat-card-content>
+    <mat-card-actions class="action-buttons">
+      <button mat-raised-button color="accent" (click)="onUpload()" [disabled]="selectedFiles.length === 0 || isLoading">
+        <mat-icon *ngIf="!isLoading">cloud_upload</mat-icon>
+        <span *ngIf="isLoading">טוען...</span>
+        <span *ngIf="!isLoading">שלח לסינון</span>
+      </button>
+    </mat-card-actions>
+  </mat-card>
+</div>
