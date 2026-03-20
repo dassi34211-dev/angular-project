@@ -11,12 +11,20 @@
         <mat-icon class="music-icon">headset</mat-icon>
         <h1>music<span>M</span></h1>
       </div>
-      <mat-card-subtitle>התחברי לעולם של מוזיקה</mat-card-subtitle>
+      <mat-card-subtitle>{{ isLoginMode ? 'התחברי לעולם של מוזיקה' : 'צרי משתמש חדש' }}</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
-      <form [formGroup]="signInForm" (ngSubmit)="onSignIn()">
+      <form [formGroup]="authForm" (ngSubmit)="onSubmit()">
         
+        @if (!isLoginMode) {
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>שם מלא</mat-label>
+          <input matInput formControlName="fullName" placeholder="ישראל ישראלי">
+          <mat-icon matPrefix>person</mat-icon>
+        </mat-form-field>
+        }
+
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>אימייל</mat-label>
           <input matInput formControlName="email" placeholder="you@example.com">
@@ -28,42 +36,31 @@
         <mat-form-field appearance="outline" class="full-width">
           <mat-label>סיסמה</mat-label>
           <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
-<<<<<<< HEAD
           <mat-icon matPrefix>lock</mat-icon>
           <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" type="button">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
           </button>
           @if (f['password'].hasError('required')) { <mat-error>חובה להזין סיסמה</mat-error> }
+          @if (f['password'].hasError('minlength')) { <mat-error>הסיסמה חייבת להכיל לפחות 6 תווים</mat-error> }
         </mat-form-field>
 
-        <button mat-raised-button color="primary" class="login-btn" [disabled]="signInForm.invalid">
-          כניסה למערכת
-        </button>
-      </form>
-    </mat-card-content>
-=======
-          <button mat-icon-button matSuffix (click)="hide = !hide" type="button">
-            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-          <mat-error *ngIf="f['password'].errors?.['required']">שדה זה חובה</mat-error>
-          <mat-error *ngIf="f['password'].errors?.['minlength']">הסיסמה חייבת להכיל לפחות 6 תווים</mat-error>
-        </mat-form-field>
-
-        <button mat-raised-button color="primary" class="login-button" [disabled]="authForm.invalid || isLoading" type="submit">
-          <span *ngIf="isLoading">טוען...</span>
-          <span *ngIf="!isLoading">{{ isLoginMode ? 'התחברות למערכת' : 'הרשמה עכשיו' }}</span>
+        <button mat-raised-button color="primary" class="login-btn" [disabled]="authForm.invalid || isLoading" type="submit">
+          @if (isLoading) {
+            <span>טוען...</span>
+          } @else {
+            <span>{{ isLoginMode ? 'כניסה למערכת' : 'הרשמה' }}</span>
+          }
         </button>
       </form>
     </mat-card-content>
 
     <mat-card-footer class="login-footer">
-      <p>
+      <p style="text-align: center; margin-top: 10px;">
         {{ isLoginMode ? 'אין לך חשבון?' : 'כבר יש לך חשבון?' }} 
-        <a href="javascript:void(0)" (click)="toggleMode()">
+        <a href="javascript:void(0)" (click)="toggleMode()" style="color: #69f0ae; text-decoration: none; font-weight: bold;">
           {{ isLoginMode ? 'צור חשבון חדש' : 'התחבר מכאן' }}
         </a>
       </p>
     </mat-card-footer>
->>>>>>> michali-code
   </mat-card>
 </div>
